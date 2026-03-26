@@ -49,3 +49,7 @@ body {
 .animate-pulse-lines {
   animation: pulse-lines 2s infinite ease-in-out;
 }
+
+html {
+  scroll-behavior: smooth;
+}

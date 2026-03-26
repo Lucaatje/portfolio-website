@@ -1,7 +1,33 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import resume from "../assets/resume.pdf"
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const location = useLocation();
+  const [activeSection, setActiveSection] = useState("home");
+
+  useEffect(() => {
+    const sections = ["home", "about", "projects", "experience"];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        threshold: 0.6, 
+      }
+    );
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const links = [
     {
@@ -10,20 +36,20 @@ export default function Navbar() {
       path: "/",
     },
     {
+      id: "about",
+      name: "About",
+      path: "/about",
+    },
+    {
       id: "Projects",
       name: "Projects",
       path: "/projects",
     },
     {
-      id: "Experience",
+      id: "experience",
       name: "Experience",
       path: "/experience",
-    },
-    {
-      id: "Contact",
-      name: "Contact",
-      path: "/contact",
-    },
+    }
   ];
 
   return (
@@ -37,9 +63,7 @@ export default function Navbar() {
 
           {links.map((link) => {
             const isActive =
-              link.path === "/"
-                ? location.pathname === "/"
-                : location.pathname.startsWith(link.path);
+              link.id.toLowerCase() === activeSection;
 
             return (
               <Link
@@ -57,9 +81,13 @@ export default function Navbar() {
           })}
         </div>
 
-        <button className="border border-cyan-700 text-cyan-700 px-4 py-2 rounded hover:bg-cyan-700/10 transition">
+        <a
+          href={resume}
+          download
+          className="border border-cyan-700 text-cyan-700 px-4 py-2 rounded hover:bg-cyan-700/10 transition"
+        >
           Download Resume
-        </button>
+        </a>
 
       </div>
     </nav>
